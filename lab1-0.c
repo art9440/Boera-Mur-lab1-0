@@ -9,46 +9,44 @@
 
 
 int shift(int index, char *pattern, int *table, char symbol){
-    if (strchr(pattern, symbol) == NULL && index == strlen(pattern) - SHIFT)
+    if (strchr(pattern, symbol) == NULL &&
+    index == strlen(pattern) - SHIFT || index == 0)
         return strlen(pattern);
-    else if(strchr(pattern,symbol) == NULL && index != strlen(pattern) - SHIFT)
+    else if(strchr(pattern,symbol) == NULL &&
+    index != strlen(pattern) - SHIFT)
         return table[strlen(pattern) - SHIFT];
     else
-        return table[strrchr(pattern,symbol) - pattern - SHIFT] - SHIFT;
+        return table[strchr(pattern,symbol) - pattern];
 
 }
 
 
 int changeIndx(int textIndx, int patlen, char *pattern,
-               char *text, int textlen, int *table){
+               char *text, int *table){
     int nowIndx = textIndx;
     for (int i = patlen - SHIFT; i >= 0; i--) {
         if (pattern[i] == text[nowIndx]) {
             printf("%d ", nowIndx + SHIFT);
-            nowIndx--;
-            if (nowIndx == -1){
-                nowIndx = textIndx + textlen;
-                return nowIndx;
+            if (i != 0)
+                nowIndx--;
+            else
+                return textIndx + patlen;
             }
-        }
         else {
             printf("%d ", nowIndx + SHIFT);
-            nowIndx += shift(i, pattern, table, text[nowIndx]);
+            nowIndx = textIndx + shift(i, pattern, table, text[nowIndx]);
             return nowIndx;
         }
     }
-    if (nowIndx + SHIFT == textlen)
-        exit(0);
 }
 
 
 void boyerMooreSearch(char* text, char* pattern,
     int patlen,int textlen, int *table) {
     int textIndx = patlen - SHIFT;
-    while(textIndx < textlen)
+    while(textIndx < textlen - SHIFT)
         textIndx = changeIndx(textIndx, patlen, pattern,
-        text, textlen, table);
-
+        text, table);
 }
 
 
@@ -64,7 +62,7 @@ void fillTable(int *table, char *pattern, int patlen){
 
 
 int main(){
-    int patlen, textlen = 0, *table;
+    int patlen, textlen = 1, *table;
     char *text, pattern[PATTERN_SIZE], symbol;
     gets(pattern);
     patlen = strlen(pattern);
@@ -73,15 +71,16 @@ int main(){
     symbol = getc(stdin);
 
     while (symbol != EOF){
+        text[textlen - 1] = symbol;
         textlen++;
         text = (char*)realloc(text, textlen * sizeof(char));
-        *(text + textlen - SHIFT) = (char)symbol;
         symbol = getc(stdin);
     }
 
     if (textlen - SHIFT == 0) {
         return 0;
     }
+
     fillTable(table, pattern, patlen);
     boyerMooreSearch(text, pattern, patlen, textlen, table);
 
