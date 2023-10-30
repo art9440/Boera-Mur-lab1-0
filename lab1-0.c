@@ -4,7 +4,7 @@
 #include <malloc.h>
 
 
-#define PATTERN_SIZE 17 //16 symbols + \0
+#define PATTERN_SIZE 17      //16 symbols + \0
 #define SHIFT 1
 
 
