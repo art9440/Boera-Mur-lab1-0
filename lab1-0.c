@@ -24,6 +24,7 @@ int shift(int index, char *pattern, int *table, char symbol){
 int changeIndx(int textIndx, int patlen, char *pattern,
                char *text, int *table){
     int nowIndx = textIndx;
+
     for (int i = patlen - SHIFT; i >= 0; i--) {
         if (pattern[i] == text[nowIndx]) {
             printf("%d ", nowIndx + SHIFT);
@@ -44,6 +45,7 @@ int changeIndx(int textIndx, int patlen, char *pattern,
 void boyerMooreSearch(char* text, char* pattern,
     int patlen,int textlen, int *table) {
     int textIndx = patlen - SHIFT;
+
     while(textIndx < textlen - SHIFT)
         textIndx = changeIndx(textIndx, patlen, pattern,
         text, table);
@@ -64,10 +66,11 @@ void fillTable(int *table, char *pattern, int patlen){
 int main(){
     int patlen, textlen = 1, *table;
     char *text, pattern[PATTERN_SIZE], symbol;
-    gets(pattern);
-    patlen = strlen(pattern);
     text = (char*)malloc(sizeof(char));
     table = (int*)malloc(patlen * sizeof(int));
+
+    gets(pattern);
+    patlen = strlen(pattern);
     symbol = getc(stdin);
 
     while (symbol != EOF){
@@ -77,11 +80,11 @@ int main(){
         symbol = getc(stdin);
     }
 
-    if (textlen - SHIFT == 0) {
+    if (textlen - SHIFT == 0)
         return 0;
-    }
 
     fillTable(table, pattern, patlen);
+
     boyerMooreSearch(text, pattern, patlen, textlen, table);
 
 
