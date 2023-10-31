@@ -4,11 +4,11 @@
 #include <malloc.h>
 
 
-#define PATTERN_SIZE 17
+#define PATTERN_SIZE 17      //16 symbols + \0
 #define SHIFT 1
 
 
-int shift(int index, char *pattern, int *table, char symbol){
+int shift(int index, char *pattern, int *table, char symbol){  //pattern shift by table values
     if (strchr(pattern, symbol) == NULL &&
         index == strlen(pattern) - SHIFT || index == 0)
         return strlen(pattern);
@@ -21,8 +21,8 @@ int shift(int index, char *pattern, int *table, char symbol){
 }
 
 
-int changeIndx(int textIndx, int patlen, char *pattern,
-               char *text, int *table){
+int changeIndx(int textIndx, int patlen, char *pattern, //output of template
+               char *text, int *table){                 //occurrences and its movement
     int nowIndx = textIndx;
     for (int i = patlen - SHIFT; i >= 0; i--) {
         if (pattern[i] == text[nowIndx]) {
@@ -41,8 +41,8 @@ int changeIndx(int textIndx, int patlen, char *pattern,
 }
 
 
-void boyerMooreSearch(char* text, char* pattern,
-                      int patlen,int textlen, int *table) {
+void boyerMooreSearch(char* text, char* pattern,               //the beginning of the execution
+                      int patlen,int textlen, int *table) {    //of the Boyer-Moore algorithm
     int textIndx = patlen - SHIFT;
     while(textIndx < textlen - SHIFT)
         textIndx = changeIndx(textIndx, patlen, pattern,
@@ -50,8 +50,8 @@ void boyerMooreSearch(char* text, char* pattern,
 }
 
 
-void fillTable(int *table, char *pattern, int patlen){
-    table[patlen - SHIFT] = patlen - SHIFT;
+void fillTable(int *table, char *pattern, int patlen){ //filling the table with
+    table[patlen - SHIFT] = patlen - SHIFT;            //distances to the end of the template
     for (int i = patlen - 2; i >= 0; i--) {
         if (strrchr(pattern, pattern[i]) - pattern == i)
             table[i] = patlen - i - SHIFT;
@@ -70,7 +70,7 @@ int main(){
     table = (int*)malloc(patlen * sizeof(int));
     symbol = getc(stdin);
 
-    while (symbol != EOF){
+    while (symbol != EOF){  //reading tests until there is an EOF
         text[textlen - 1] = (char) symbol;
         textlen++;
         text = (char*)realloc(text, textlen * sizeof(char));
