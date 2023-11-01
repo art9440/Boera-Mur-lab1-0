@@ -84,6 +84,7 @@ int main(){
     fillTable(table, pattern, patlen);
     boyerMooreSearch(text, pattern, patlen, textlen, table);
 
-
+    free(text);
+    free(table);
     return 0;
 }
